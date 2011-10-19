@@ -4,7 +4,9 @@ FHActProxy is a Sencha User Extension to allow developers to perform a Feedhenry
 
 ## Installation
 To use the FHActProxy, simply include the file in the head of your HTML: 
+
     <script type="text/javascript" src="js/FHActProxy.js"></script>
+
 This script should be included immediately after sencha-touch.js. 
 
 ## Usage
