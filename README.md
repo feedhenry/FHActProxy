@@ -9,13 +9,14 @@ This script should be included immediately after sencha-touch.js.
 
 ## Usage
 Register a Sencha model for your store, referencing the 'fhact' proxy. The id is the name of the cloud action call that the proxy references. 
-    Ext.regModel('listModel', {
-      fields: ['name', 'phone'],
-      proxy : {
-        type: 'fhact',
-        reader: 'json',
-        id: 'getNames' // the name of an act call (a function in the cloud)
-      }
+
+Ext.regModel('listModel', {
+        fields: ['name', 'phone'],
+        proxy : {
+            type: 'fhact',
+            reader: 'json',
+            id: 'getNames' // the name of an act call (a function in the cloud)
+        }
     });
 
 Connect your store to this model:
@@ -26,6 +27,7 @@ Connect your store to this model:
     });
 
 Here's an example cloud action call loading some data to work with this store:
+
     function getNames(){
       data = [
               {
