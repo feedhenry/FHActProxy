@@ -49,3 +49,27 @@ Here's an example cloud action call loading some data to work with this store:
               ];
       return { data: records};
     }
+
+*New:* You can also tell the proxy to send some data through with the proxy using the 'req' parameter. In our definition of the proxy (as above), as well as specifying the name of the act call to use, we could specify some JSON data to send through:
+    {
+      type: 'fhact',
+      reader: 'json',
+      act: 'getNames',
+      req: { includePhotos: true, gender: 'male' }
+    }
+
+A clever use of this is to send authentication data through with every request. If we set the req paramater to a string, it'll automatically look up $fh.data local storage and retrieve with that key.
+So, if we store a session object in $fh.data after log in like so:
+    var s = { session: 'a62b81abff3', token: 'f9f0jsefj903' };
+    $fh.data({
+      act: 'save',
+      key: 'sessionData',
+      value: JSON.stringify(s)
+    });
+we can then tell our proxy to use this stored session data with all future request - since we pass a string, it'll automatically pull from $fh.data with the key that matches the value of 'request'.
+    {
+      type: 'fhact',
+      reader: 'json',
+      act: 'getNames',
+      req: 'sessionData' // this automatically retrieves from $fh.data our session object & sends it thru to the serverside
+    }
