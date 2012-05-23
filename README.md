@@ -71,9 +71,13 @@ So, if we store a session object in $fh.data after log in like so:
 
 we can then tell our proxy to use this stored session data with all future request - since we pass a string, it'll automatically pull from $fh.data with the key that matches the value of 'request'.
 
+we can then tell our proxy to use this stored session data with all future request - since we pass a string, it'll automatically pull from $fh.data with the key that matches the value of 'request'.
+
     {
       type: 'fhact',
       reader: 'json',
       act: 'getNames',
       req: 'sessionData' // this automatically retrieves from $fh.data our session object & sends it thru to the serverside
     }
+
+
