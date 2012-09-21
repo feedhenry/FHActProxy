@@ -50,20 +50,20 @@ Ext.define('Ext.ux.FHActProxy', {
 
     function doAct(actId, req) {
       $fh.act({
-                'act': actId,
-                'req': req
-              },
-              function (res) {
+          'act': actId,
+          'req': req
+        },
+        function (res) {
 
-                // Check for a 'data' or 'records' property if what we got back isn't an array.
-                if (toString.call(res) !== '[object Array]') {
-                  res = res.data || res.records;
-                }
-                that.processResponse(true, operation, null, res, callback, scope);
-              },
-              function (err) {
-                that.processResponse(false, operation, null, err, callback, scope);
-              });
+          // Check for a 'data' or 'records' property if what we got back isn't an array.
+          if (toString.call(res) !== '[object Array]') {
+            res = res.data || res.records;
+          }
+          that.processResponse(true, operation, null, res, callback, scope);
+        },
+        function (err) {
+          that.processResponse(false, operation, null, err, callback, scope);
+        });
     }
   }
 });
