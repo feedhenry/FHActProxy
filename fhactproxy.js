@@ -4,7 +4,7 @@
  * @author Cian Clarke <cian.clarke@feedhenry.com>
  */
 
-Ext.define('Ext.ux.FHActProxy', {
+Ext.define('Ext.ux.FhActProxy', {
   extend: 'Ext.data.proxy.Server',
   alias: 'proxy.fhactproxy',
 
@@ -32,38 +32,37 @@ Ext.define('Ext.ux.FHActProxy', {
    * @param {Object} scope The scope in which to execute the callback.
    */
   doRequest: function doRequest(operation, callback, scope) {
-    var that = this,
-      actId = this.getAct(),
-      req = this.getReq(),
-      localItem;
+    var self = this,
+        actId = this.getAct(),
+        req = this.getReq();
 
     // By convention if we get a string as the request, it's implied that we should check
     // localStorage for a matching request object.
     if (typeof req === 'string') {
-      localItem = localStorage.getItem(req);
+      req = localStorage.getItem(req);
 
       // localStorage will return null if the key doesn't exist, so we must normalise it.
-      localItem = !localItem ? {} : JSON.parse(localItem);
+      req = !req ? {} : JSON.parse(req);
     }
 
     doAct(actId, req);
 
     function doAct(actId, req) {
       $fh.act({
-          'act': actId,
-          'req': req
-        },
-        function (res) {
+            'act': actId,
+            'req': req
+          },
+          function (res) {
 
-          // Check for a 'data' or 'records' property if what we got back isn't an array.
-          if (toString.call(res) !== '[object Array]') {
-            res = res.data || res.records;
-          }
-          that.processResponse(true, operation, null, res, callback, scope);
-        },
-        function (err) {
-          that.processResponse(false, operation, null, err, callback, scope);
-        });
+            // Check for a 'data' or 'records' property if what we got back isn't an array.
+            if (toString.call(res) !== '[object Array]') {
+              res = res.data || res.records;
+            }
+            self.processResponse(true, operation, null, res, callback, scope);
+          },
+          function (err) {
+            self.processResponse(false, operation, null, err, callback, scope);
+          });
     }
   }
 });
