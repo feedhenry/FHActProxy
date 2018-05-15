@@ -3,84 +3,81 @@ This repository has been deprecated and is not being maintained. It should not b
 
 # Feedhenry Act Call Proxy
 
-FHActProxy is a Sencha User Extension to allow developers to perform a Feedhenry action call to the cloud through a special type of proxy known as 'fhact'. 
+FhActProxy is a Sencha User Extension to allow developers to perform a Feedhenry action call to the
+cloud through a special type of proxy known as 'fhactproxy'.
 
-## Installation
-To use the FHActProxy, simply include the file in the head of your HTML: 
+## Installation & Usage
 
-    <script type="text/javascript" src="js/FHActProxy.js"></script>
+### The Basics
 
-This script should be included immediately after sencha-touch.js. 
+The recommended method of including and using this proxy in your own Sencha app is to place the
+file in the _sdk/src/ux_ directory of your project and then simply require and reference it within
+your project as usual. Example:
 
-## Usage
-Register a Sencha model for your store, referencing the 'fhact' proxy. The id is the name of the cloud action call that the proxy references. 
+    Ext.define('MyApp.model.ExampleModel', {
+      extend: 'Ext.data.Model',
 
-    Ext.define('listModel', {
-      extend: "Ext.data.Model",
+      // You need to require the proxy before you can use it.
+      requires: ['Ext.ux.FhActProxy'],
+
       config: {
-        fields: ['name', 'phone'],
-        proxy : {
-            type: 'fhact',
-            reader: 'json',
-            act: 'getNames' // the name of an act call (a function in the cloud)
+        fields: ['firstname', 'surname', 'etc'],
+
+        proxy: {
+
+          // Now you can reference the proxy using its alias.
+          type: 'fhactproxy',
+
+          // Specify the specific act method from your main.js file to call.
+          act: 'getContactNames'
         }
       }
     });
 
-Connect your store to this model:
-  
-    Ext.define('listStore',{
-      extend:'Ext.data.Store',
-      config: {
-        model : 'listModel',
-        autoLoad: true
-      }
-    });
+Alternatively, if (for whatever reason) you're not making use of Sencha's Ext.Loader and various
+build tools, you can also simply include a reference to the fhactproxy.js file in your HTML file,
+after the reference to Sencha's js file. Example:
 
-Here's an example cloud action call loading some data to work with this store:
+    ...
+    <script src="sdk/sencha-touch-all.js"></script>
+    <script src="js/fhactproxy.js"></script>
+    ...
 
-    function getNames(){
-      var records = [
-              {
-                name : 'John',
-                phone : '123'
-              },
-              {
-                name : 'Mary',
-                phone : '456'
-              }
-              ];
-      return { data: records};
-    }
+### Additional Usage
 
-*New:* You can also tell the proxy to send some data through with the proxy using the 'req' parameter. In our definition of the proxy (as above), as well as specifying the name of the act call to use, we could specify some JSON data to send through:
+You can also tell the proxy to send some data through with the proxy using the 'req' parameter. As
+well as specifying the name of the act call to use, we could specify some JSON data to send
+through:
 
+
+    ...
     {
-      type: 'fhact',
-      reader: 'json',
-      act: 'getNames',
+      type: 'fhactproxy',
+      act: 'getContactNames',
       req: { includePhotos: true, gender: 'male' }
     }
+    ...
 
-A clever use of this is to send authentication data through with every request. If we set the req paramater to a string, it'll automatically look up $fh.data local storage and retrieve with that key.
-So, if we store a session object in $fh.data after log in like so:
+A clever use of this is to send authentication data through with every request. If we set the req
+paramater to a string rather than an object, fhactproxy will automatically look for a
+corresponding entry in localStorage and, if found, will JSON.parse() it and use that as the req
+object... so, if we store a session object in localStorage after logging in like so:
 
-    var s = { session: 'a62b81abff3', token: 'f9f0jsefj903' };
-    $fh.data({
-      act: 'save',
-      key: 'sessionData',
-      value: JSON.stringify(s)
-    });
+    var sessionInfo = { sessionId: '8dj237fh2c', timestamp: new Date() }
+    localStorage.setItem('sessionInfo', JSON.stringify(sessionInfo));
 
-we can then tell our proxy to use this stored session data with all future request - since we pass a string, it'll automatically pull from $fh.data with the key that matches the value of 'request'.
+we can then tell our proxy to use this stored session data with all future requests - since we pass
+a string, it will automatically pull the object from localStorage with the key that matches the
+value of the `req` parameter. Example:
 
-we can then tell our proxy to use this stored session data with all future request - since we pass a string, it'll automatically pull from $fh.data with the key that matches the value of 'request'.
-
+    ...
     {
-      type: 'fhact',
-      reader: 'json',
-      act: 'getNames',
-      req: 'sessionData' // this automatically retrieves from $fh.data our session object & sends it thru to the serverside
+      type: 'fhactproxy',
+      act: 'getContactNames',
+
+      // Tells fhactproxy to automatically pull the sessionInfo object from localStorage each time.
+      req: 'sessionInfo'
     }
+    ...
 
 
