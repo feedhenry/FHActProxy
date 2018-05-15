@@ -1,3 +1,6 @@
+## Deprecation Notice
+This repository has been deprecated and is not being maintained. It should not be used. If you have any questions, please get in touch with the collaborators.
+
 # Feedhenry Act Call Proxy
 
 FHActProxy is a Sencha User Extension to allow developers to perform a Feedhenry action call to the cloud through a special type of proxy known as 'fhact'. 
